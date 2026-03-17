@@ -26,12 +26,20 @@ namespace BookingHub.Tests
         {
             using var db = CreateInMemoryDb();
             var repo = new BookingRepository(db);
-            var handler = new CreateBookingHandler(repo);
+            var flightRepo = new FlightRepository(db);
+
+            // Seed a flight
+            var flight = BookingHub.Domain.Entities.Flight.Create("Delhi", "Mumbai", DateTime.UtcNow.AddDays(10), 10);
+            db.Flights.Add(flight);
+            await db.SaveChangesAsync();
+
+            var handler = new CreateBookingHandler(repo, flightRepo);
 
             var request = new CreateBookingRequest
             {
                 BookingDate = DateTime.UtcNow.AddDays(1),
-                NumberOfSeats = 3
+                SeatCount = 3,
+                FlightId = flight.IdValue
             };
 
             var result = await handler.Handle(request, CancellationToken.None);

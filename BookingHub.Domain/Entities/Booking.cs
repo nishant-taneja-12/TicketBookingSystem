@@ -34,15 +34,26 @@ namespace BookingHub.Domain.Entities
         // Optional value object for destination
         public BookingHub.Domain.ValueObjects.BookingDestination? Destination { get; private set; }
 
+        // New: Flight association
+        public FlightId? FlightId { get; private set; }
+
+        // EF-only primitive representation for FlightId
+        public Guid? FlightIdValue
+        {
+            get => FlightId == null ? null : FlightId.Value;
+            private set => FlightId = value == null ? null : FlightId.FromGuid(value.Value);
+        }
+
         // For EF Core
         private Booking() { }
 
-        private Booking(BookingId id, BookingDate bookingDate, SeatCount seatCount, BookingHub.Domain.ValueObjects.BookingDestination? destination = null)
+        private Booking(BookingId id, BookingDate bookingDate, SeatCount seatCount, BookingHub.Domain.ValueObjects.BookingDestination? destination = null, FlightId? flightId = null)
         {
             Id = id;
             BookingDate = bookingDate;
             SeatCount = seatCount;
             Destination = destination;
+            FlightId = flightId;
 
             // raise event as part of creation
             _events.Add(new BookingCreatedEvent(Id, BookingDate, SeatCount));
@@ -52,12 +63,12 @@ namespace BookingHub.Domain.Entities
         /// Factory that accepts primitive inputs for interoperability but creates Value Objects internally.
         /// Business invariants are enforced by the Value Objects and aggregate methods.
         /// </summary>
-        public static Booking Create(DateTime bookingDate, int numberOfSeats, BookingHub.Domain.ValueObjects.BookingDestination? destination = null)
+        public static Booking Create(DateTime bookingDate, int numberOfSeats, BookingHub.Domain.ValueObjects.BookingDestination? destination = null, FlightId? flightId = null)
         {
             var bd = BookingDate.FromDateTime(bookingDate);
             var sc = SeatCount.FromInt(numberOfSeats);
             var id = BookingId.New();
-            return new Booking(id, bd, sc, destination);
+            return new Booking(id, bd, sc, destination, flightId);
         }
 
         /// <summary>

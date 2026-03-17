@@ -19,26 +19,74 @@ namespace BookingHub.Migrations
 
             modelBuilder.Entity("BookingHub.Domain.Entities.Booking", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("IdValue")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("NumberOfSeats")
+                    b.Property<Guid?>("FlightIdValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SeatCount")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdValue");
 
                     b.ToTable("Bookings", (string)null);
+                });
+
+            modelBuilder.Entity("BookingHub.Domain.Entities.Flight", b =>
+                {
+                    b.Property<Guid>("IdValue")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AvailableSeats")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DepartureDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("From")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FromLocation");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("ToLocation");
+
+                    b.HasKey("IdValue");
+
+                    b.ToTable("Flights", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdValue = new Guid("11111111-1111-1111-1111-111111111111"),
+                            AvailableSeats = 100,
+                            DepartureDate = new DateTime(2027, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            From = "Delhi",
+                            To = "Mumbai"
+                        },
+                        new
+                        {
+                            IdValue = new Guid("22222222-2222-2222-2222-222222222222"),
+                            AvailableSeats = 50,
+                            DepartureDate = new DateTime(2027, 2, 1, 15, 30, 0, 0, DateTimeKind.Utc),
+                            From = "Bangalore",
+                            To = "Hyderabad"
+                        });
                 });
 
             modelBuilder.Entity("BookingHub.Domain.Entities.Booking", b =>
                 {
                     b.OwnsOne("BookingHub.Domain.ValueObjects.BookingDestination", "Destination", b1 =>
                         {
-                            b1.Property<string>("BookingId")
+                            b1.Property<Guid>("BookingIdValue")
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("Address")
@@ -51,12 +99,12 @@ namespace BookingHub.Migrations
                                 .HasColumnType("TEXT")
                                 .HasColumnName("Destination_Name");
 
-                            b1.HasKey("BookingId");
+                            b1.HasKey("BookingIdValue");
 
                             b1.ToTable("Bookings");
 
                             b1.WithOwner()
-                                .HasForeignKey("BookingId");
+                                .HasForeignKey("BookingIdValue");
                         });
 
                     b.Navigation("Destination");

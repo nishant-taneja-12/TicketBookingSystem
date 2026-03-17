@@ -5,5 +5,5 @@ using BookingHub.Application.DTOs;
 
 namespace BookingHub.Application.Requests
 {
-    public record GetBookingsByDateQuery(DateTime Date) : IRequest<IEnumerable<BookingDto>>;
+    public record GetBookingsByDateRangeQuery(DateTime StartDate, DateTime EndDate) : IRequest<IEnumerable<BookingDto>>;
 }

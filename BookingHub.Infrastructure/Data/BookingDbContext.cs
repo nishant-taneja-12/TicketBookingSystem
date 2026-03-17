@@ -17,6 +17,7 @@ namespace BookingHub.Infrastructure.Data
         }
 
         public DbSet<Booking> Bookings { get; set; } = null!;
+        public DbSet<Flight> Flights { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,8 @@ namespace BookingHub.Infrastructure.Data
 
             // Prevent EF from trying to map domain Id value object directly.
             booking.Ignore(b => b.Id);
+            // Prevent EF from mapping the FlightId value object; use FlightIdValue primitive instead
+            booking.Ignore(b => b.FlightId);
 
             // Use the primitive IdValue property for the PK so EF can work with a Guid directly.
             booking.HasKey(b => b.IdValue);
@@ -65,6 +68,53 @@ namespace BookingHub.Infrastructure.Data
                     .HasColumnName("Destination_Address")
                     .HasColumnType("TEXT");
             });
+
+            // ----- Flight mapping -----
+            var flight = modelBuilder.Entity<Flight>();
+            flight.ToTable("Flights");
+
+            // Prevent EF from mapping value object directly
+            flight.Ignore(f => f.Id);
+            flight.HasKey(f => f.IdValue);
+            flight.Property(f => f.IdValue).HasColumnType("TEXT");
+
+            flight.Property(f => f.From)
+                .IsRequired()
+                .HasColumnType("TEXT")
+                .HasColumnName("FromLocation");
+
+            flight.Property(f => f.To)
+                .IsRequired()
+                .HasColumnType("TEXT")
+                .HasColumnName("ToLocation");
+
+            flight.Property(f => f.DepartureDate)
+                .IsRequired()
+                .HasColumnType("TEXT");
+
+            flight.Property(f => f.AvailableSeats)
+                .IsRequired()
+                .HasColumnType("INTEGER");
+
+            // Seed two flights (use fixed future dates)
+            flight.HasData(
+                new
+                {
+                    IdValue = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    From = "Delhi",
+                    To = "Mumbai",
+                    DepartureDate = new DateTime(2027, 1, 1, 10, 0, 0, DateTimeKind.Utc),
+                    AvailableSeats = 100
+                },
+                new
+                {
+                    IdValue = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    From = "Bangalore",
+                    To = "Hyderabad",
+                    DepartureDate = new DateTime(2027, 2, 1, 15, 30, 0, DateTimeKind.Utc),
+                    AvailableSeats = 50
+                }
+            );
         }
     }
 }

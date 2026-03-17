@@ -16,6 +16,6 @@ namespace BookingHub.Domain.Interfaces
 
         Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Booking>> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Booking>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
     }
 }

@@ -32,6 +32,7 @@ builder.Services.AddDbContext<BookingDbContext>(options => options.UseSqlite(con
 
 // Infrastructure registrations
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 
 // Register MediatR handlers from application assembly (compatible with MediatR v11)
 builder.Services.AddMediatR(typeof(CreateBookingHandler).Assembly);

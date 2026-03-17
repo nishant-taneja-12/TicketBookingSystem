@@ -11,9 +11,9 @@ using BookingHub.Application.Requests;
 namespace BookingHub.Application.Handlers
 {
     /// <summary>
-    /// Use-case handler to retrieve bookings for a specific date.
+    /// Use-case handler to retrieve bookings for a specific date range.
     /// </summary>
-    public class GetBookingsByDateHandler : IRequestHandler<GetBookingsByDateQuery, IEnumerable<BookingDto>>
+    public class GetBookingsByDateHandler : IRequestHandler<GetBookingsByDateRangeQuery, IEnumerable<BookingDto>>
     {
         private readonly IBookingRepository _repository;
 
@@ -22,9 +22,9 @@ namespace BookingHub.Application.Handlers
             _repository = repository;
         }
 
-        public async Task<IEnumerable<BookingDto>> Handle(GetBookingsByDateQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BookingDto>> Handle(GetBookingsByDateRangeQuery request, CancellationToken cancellationToken)
         {
-            var bookings = await _repository.GetByDateAsync(request.Date.Date, cancellationToken).ConfigureAwait(false);
+            var bookings = await _repository.GetByDateRangeAsync(request.StartDate.Date, request.EndDate.Date, cancellationToken).ConfigureAwait(false);
 
             return bookings.Select(b => new BookingDto
             {

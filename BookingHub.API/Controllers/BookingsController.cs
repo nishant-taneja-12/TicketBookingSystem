@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using System;
 using BookingHub.Application.DTOs;
 using BookingHub.Application.Requests;
 using MediatR;
@@ -56,13 +55,19 @@ namespace BookingHub.API.Controllers
         }
 
         /// <summary>
-        /// Get bookings by date. Provide a date query param in ISO format (yyyy-MM-dd or full date).
+        /// Get bookings by date range. Provide startDate and endDate query params in ISO format (yyyy-MM-dd or full date).
         /// </summary>
-        [HttpGet("bydate")]
+        [HttpGet("bydaterange")]
         [SwaggerResponseExample(200, typeof(BookingHub.Infrastructure.SwaggerExamples.BookingDtoExample))]
-        public async Task<IActionResult> GetByDate([FromQuery] DateTime date)
+        public async Task<IActionResult> GetByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            var results = await _mediator.Send(new GetBookingsByDateQuery(date)).ConfigureAwait(false);
+            // Validate range
+            if (startDate > endDate)
+            {
+                return BadRequest(new { error = "startDate must be less than or equal to endDate" });
+            }
+
+            var results = await _mediator.Send(new GetBookingsByDateRangeQuery(startDate, endDate)).ConfigureAwait(false);
             return Ok(results);
         }
     }

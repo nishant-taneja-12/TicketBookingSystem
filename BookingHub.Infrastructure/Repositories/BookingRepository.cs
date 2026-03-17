@@ -38,15 +38,15 @@ namespace BookingHub.Infrastructure.Repositories
                 .ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Booking>> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Booking>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
         {
-            // Compare Date part to support retrieving all bookings for a given calendar date.
-            var start = date.Date;
-            var end = start.AddDays(1);
+            // Normalize to date boundaries and include bookings whose BookingDate falls on the start/end dates.
+            var start = startDate.Date;
+            var endExclusive = endDate.Date.AddDays(1);
 
             return await _dbContext.Bookings
                 .AsNoTracking()
-                .Where(b => b.BookingDate.Value >= start && b.BookingDate.Value < end)
+                .Where(b => b.BookingDate.Value >= start && b.BookingDate.Value < endExclusive)
                 .OrderBy(b => b.BookingDate.Value)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
