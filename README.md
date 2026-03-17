@@ -9,7 +9,7 @@ It demonstrates how to build a scalable, maintainable, and testable backend syst
 ### Features
 * Create bookings
 * Retrieve bookings by ID
-* Retrieve bookings by date
+* Retrieve bookings by date range
 
 ---
 
