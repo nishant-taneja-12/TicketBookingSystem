@@ -31,9 +31,10 @@ namespace BookingHub.Infrastructure.Repositories
 
         public async Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
+            // Compare primitive IdValue persisted by EF
             return await _dbContext.Bookings
                 .AsNoTracking()
-                .FirstOrDefaultAsync(b => b.Id == id, cancellationToken)
+                .FirstOrDefaultAsync(b => b.IdValue == id, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -45,8 +46,8 @@ namespace BookingHub.Infrastructure.Repositories
 
             return await _dbContext.Bookings
                 .AsNoTracking()
-                .Where(b => b.BookingDate >= start && b.BookingDate < end)
-                .OrderBy(b => b.BookingDate)
+                .Where(b => b.BookingDate.Value >= start && b.BookingDate.Value < end)
+                .OrderBy(b => b.BookingDate.Value)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }

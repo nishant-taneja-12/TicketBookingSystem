@@ -23,22 +23,21 @@ namespace BookingHub.Application.Handlers
 
         public async Task<BookingDto> Handle(CreateBookingRequest request, CancellationToken cancellationToken)
         {
-            // Create domain entity. Domain enforces validation.
-            var booking = Booking.Create(request.BookingDate, request.NumberOfSeats);
-
+            BookingHub.Domain.ValueObjects.BookingDestination? dest = null;
             if (request.Destination != null)
             {
-                var dest = new BookingDestination(request.Destination.Name, request.Destination.Address);
-                booking.SetDestination(dest);
+                dest = new BookingHub.Domain.ValueObjects.BookingDestination(request.Destination.Name, request.Destination.Address);
             }
+
+            var booking = Booking.Create(request.BookingDate, request.NumberOfSeats, dest);
 
             await _repository.AddAsync(booking, cancellationToken).ConfigureAwait(false);
 
             return new BookingDto
             {
-                Id = booking.Id,
-                BookingDate = booking.BookingDate,
-                NumberOfSeats = booking.NumberOfSeats,
+                Id = booking.Id.Value,
+                BookingDate = booking.BookingDate.Value,
+                NumberOfSeats = booking.SeatCount.Value,
                 Destination = booking.Destination == null ? null : new BookingDestinationDto { Name = booking.Destination.Name, Address = booking.Destination.Address }
             };
         }

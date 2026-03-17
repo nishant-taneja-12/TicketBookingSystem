@@ -27,9 +27,9 @@ namespace BookingHub.Application.Handlers
 
             return new BookingDto
             {
-                Id = booking.Id,
-                BookingDate = booking.BookingDate,
-                NumberOfSeats = booking.NumberOfSeats,
+                Id = booking.Id.Value,
+                BookingDate = booking.BookingDate.Value,
+                NumberOfSeats = booking.SeatCount.Value,
                 Destination = booking.Destination == null ? null : new BookingDestinationDto { Name = booking.Destination.Name, Address = booking.Destination.Address }
             };
         }

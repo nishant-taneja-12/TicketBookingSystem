@@ -1,68 +1,81 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using BookingHub.Domain.ValueObjects;
+using BookingHub.Domain.Events;
 
 namespace BookingHub.Domain.Entities
 {
     /// <summary>
     /// Aggregate root for Booking.
-    /// This entity contains the business rules and validation related to a booking.
-    /// Domain layer must not depend on other layers.
+    /// Uses Value Objects to express domain intent and keep invariants inside the aggregate.
+    /// Raises domain events when important lifecycle changes occur.
     /// </summary>
     public class Booking
     {
-        // Private setter ensures invariants are kept inside the entity.
-        public Guid Id { get; private set; }
+        // Store events as objects to avoid EF Core attempting to map DomainEvent as an entity type.
+        private readonly List<object> _events = new();
 
-        public DateTime BookingDate { get; private set; }
+        public BookingId Id { get; private set; }
 
-        public int NumberOfSeats { get; private set; }
+        // EF-only primitive representation of the Id to ease persistence and querying. This
+        // keeps the domain model expressive (BookingId) while allowing EF Core to use a
+        // primitive key without polluting the domain with persistence concerns.
+        public Guid IdValue
+        {
+            get => Id.Value;
+            private set => Id = BookingId.FromGuid(value);
+        }
 
-        // New: optional value object representing destination
+        public BookingDate BookingDate { get; private set; }
+
+        public SeatCount SeatCount { get; private set; }
+
+        // Optional value object for destination
         public BookingHub.Domain.ValueObjects.BookingDestination? Destination { get; private set; }
 
         // For EF Core
         private Booking() { }
 
-        private Booking(Guid id, DateTime bookingDate, int numberOfSeats, BookingHub.Domain.ValueObjects.BookingDestination? destination = null)
+        private Booking(BookingId id, BookingDate bookingDate, SeatCount seatCount, BookingHub.Domain.ValueObjects.BookingDestination? destination = null)
         {
             Id = id;
             BookingDate = bookingDate;
-            NumberOfSeats = numberOfSeats;
+            SeatCount = seatCount;
             Destination = destination;
 
-            Validate();
+            // raise event as part of creation
+            _events.Add(new BookingCreatedEvent(Id, BookingDate, SeatCount));
         }
 
         /// <summary>
-        /// Factory method to create a booking while enforcing business rules.
-        /// Business rules:
-        /// - NumberOfSeats must be > 0
-        /// - BookingDate cannot be in the past (compared to UTC now, date precision considered)
+        /// Factory that accepts primitive inputs for interoperability but creates Value Objects internally.
+        /// Business invariants are enforced by the Value Objects and aggregate methods.
         /// </summary>
-        /// <exception cref="ArgumentException">When validation fails</exception>
-        public static Booking Create(DateTime bookingDate, int numberOfSeats)
+        public static Booking Create(DateTime bookingDate, int numberOfSeats, BookingHub.Domain.ValueObjects.BookingDestination? destination = null)
         {
-            return new Booking(Guid.NewGuid(), bookingDate, numberOfSeats);
+            var bd = BookingDate.FromDateTime(bookingDate);
+            var sc = SeatCount.FromInt(numberOfSeats);
+            var id = BookingId.New();
+            return new Booking(id, bd, sc, destination);
         }
 
-        private void Validate()
-        {
-            if (NumberOfSeats <= 0)
-                throw new ArgumentException("NumberOfSeats must be greater than zero.", nameof(NumberOfSeats));
+        /// <summary>
+        /// Exposes domain events produced by this aggregate. Consumers (repositories/services) may dispatch them.
+        /// Internal to avoid EF Core mapping and to keep domain events encapsulated.
+        /// </summary>
+        internal IReadOnlyCollection<DomainEvent> DomainEvents => _events.Cast<DomainEvent>().ToList().AsReadOnly();
 
-            // We interpret "cannot be in the past" as booking date must be >= today (UTC)
-            var todayUtc = DateTime.UtcNow.Date;
-            if (BookingDate.Date < todayUtc)
-                throw new ArgumentException("BookingDate cannot be in the past.", nameof(BookingDate));
+        internal void ClearDomainEvents() => _events.Clear();
+
+        /// <summary>
+        /// Change seat count via aggregate behavior to ensure invariants are maintained.
+        /// </summary>
+        public void ChangeSeatCount(int newCount)
+        {
+            SeatCount = SeatCount.FromInt(newCount);
         }
 
-        // Example domain behavior: change seats (keeps validations inside entity)
-        public void ChangeNumberOfSeats(int newNumberOfSeats)
-        {
-            NumberOfSeats = newNumberOfSeats;
-            Validate();
-        }
-
-        // Allow setting the destination as part of aggregate behavior
         public void SetDestination(BookingHub.Domain.ValueObjects.BookingDestination destination)
         {
             Destination = destination ?? throw new ArgumentNullException(nameof(destination));

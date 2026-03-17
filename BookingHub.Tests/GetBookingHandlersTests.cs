@@ -32,10 +32,10 @@ namespace BookingHub.Tests
             await db.SaveChangesAsync();
 
             var handler = new GetBookingByIdHandler(repo);
-            var result = await handler.Handle(new GetBookingByIdQuery(booking.Id), default);
+            var result = await handler.Handle(new GetBookingByIdQuery(booking.IdValue), default);
 
             Assert.NotNull(result);
-            Assert.Equal(booking.Id, result.Id);
+            Assert.Equal(booking.IdValue, result.Id);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace BookingHub.Tests
             await db.SaveChangesAsync();
 
             var handler = new GetBookingsByDateHandler(repo);
-            var results = await handler.Handle(new GetBookingsByDateQuery(booking.BookingDate.Date), default);
+            var results = await handler.Handle(new GetBookingsByDateQuery(booking.BookingDate.Value.Date), default);
 
             Assert.NotEmpty(results);
         }

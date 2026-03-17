@@ -40,7 +40,7 @@ namespace BookingHub.Tests
             Assert.Equal(3, result.NumberOfSeats);
 
             // Verify persisted
-            var persisted = await db.Bookings.FirstOrDefaultAsync(b => b.Id == result.Id);
+            var persisted = await db.Bookings.FirstOrDefaultAsync(b => b.IdValue == result.Id);
             Assert.NotNull(persisted);
         }
     }

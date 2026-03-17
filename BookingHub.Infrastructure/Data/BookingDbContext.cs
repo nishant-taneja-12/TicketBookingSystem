@@ -1,6 +1,8 @@
 using System;
 using BookingHub.Domain.Entities;
+using BookingHub.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookingHub.Infrastructure.Data
 {
@@ -23,20 +25,32 @@ namespace BookingHub.Infrastructure.Data
             var booking = modelBuilder.Entity<Booking>();
             booking.ToTable("Bookings");
 
-            booking.HasKey(b => b.Id);
+            // Prevent EF from trying to map domain Id value object directly.
+            booking.Ignore(b => b.Id);
 
-            // SQLite stores Guid as TEXT -- using conversion ensures portability and explicit schema.
-            booking.Property(b => b.Id)
-                .HasConversion(id => id.ToString(), id => Guid.Parse(id))
+            // Use the primitive IdValue property for the PK so EF can work with a Guid directly.
+            booking.HasKey(b => b.IdValue);
+
+            booking.Property(b => b.IdValue)
                 .HasColumnType("TEXT");
 
-            // Store DateTime as TEXT (ISO 8601). EF Core maps DateTime to TEXT in SQLite by default,
-            // but explicit column type improves clarity.
+            // BookingDate -> stored as TEXT/DateTime using converter
+            var dateConverter = new ValueConverter<BookingDate, DateTime>(
+                v => v.Value,
+                v => BookingDate.FromDateTime(v));
+
             booking.Property(b => b.BookingDate)
+                .HasConversion(dateConverter)
                 .IsRequired()
                 .HasColumnType("TEXT");
 
-            booking.Property(b => b.NumberOfSeats)
+            // SeatCount -> INTEGER
+            var seatsConverter = new ValueConverter<SeatCount, int>(
+                v => v.Value,
+                v => SeatCount.FromInt(v));
+
+            booking.Property(b => b.SeatCount)
+                .HasConversion(seatsConverter)
                 .IsRequired()
                 .HasColumnType("INTEGER");
 

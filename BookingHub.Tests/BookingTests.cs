@@ -12,9 +12,9 @@ namespace BookingHub.Tests
             var bookingDate = DateTime.UtcNow.AddDays(1);
             var booking = Booking.Create(bookingDate, 2);
 
-            Assert.Equal(2, booking.NumberOfSeats);
-            Assert.Equal(bookingDate.Date, booking.BookingDate.Date);
-            Assert.NotEqual(Guid.Empty, booking.Id);
+            Assert.Equal(2, booking.SeatCount.Value);
+            Assert.Equal(bookingDate.Date, booking.BookingDate.Value.Date);
+            Assert.NotEqual(Guid.Empty, booking.Id.Value);
         }
 
         [Fact]
