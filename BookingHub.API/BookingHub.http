@@ -1,0 +1,14 @@
+### Create a new booking
+POST http://localhost:5000/api/bookings
+Content-Type: application/json
+
+{
+  "bookingDate": "2024-07-01T14:00:00Z",
+  "numberOfSeats": 2
+}
+
+### Get a booking by ID (replace {id} with actual booking id from create response)
+GET http://localhost:5000/api/bookings/{id}
+
+### Get all bookings (if endpoint exists)
+GET http://localhost:5000/api/bookings

@@ -1,0 +1,69 @@
+# Visual Studio / .NET Core common ignores
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+**/bin/
+**/obj/
+**/out/
+
+# NuGet
+*.nupkg
+packages/
+.nuget/packages/
+
+# Rider
+.idea/
+*.sublime-workspace
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database files (local development)
+*.db
+*.db-journal
+
+# EF Core Migrations snapshot lock
+**/Migrations/**/*.Designer.cs
+
+# Publish output
+**/publish/
+
+# Rider and VS Code settings
+*.dotCover
+
+# Test results
+TestResults/
+
+# IIS Express
+/.vs/**/applicationhost.config
+
+# JetBrains
+*.DotSettings.user
+
+# Resharper
+_ReSharper*/
+*.ReSharper
+
+# Temporary files
+*.tmp
+
+# User secrets
+secrets.json
+
+# Tools
+Tools/**/bin/
+Tools/**/obj/
+
+# Ignore generated EF migrations snapshot file (if you prefer to keep migrations in source control, remove this)
+# BookingHub.Infrastructure/Migrations/BookingDbContextModelSnapshot.cs
+
+# End of file
