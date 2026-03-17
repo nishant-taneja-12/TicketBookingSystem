@@ -34,20 +34,30 @@ namespace BookingHub.Infrastructure.Data
             // Use the primitive IdValue property for the PK so EF can work with a Guid directly.
             booking.HasKey(b => b.IdValue);
 
+            // Map IdValue to column 'IdValue' (new schema)
             booking.Property(b => b.IdValue)
+                .HasColumnName("IdValue")
                 .HasColumnType("TEXT");
 
             // BookingDate -> stored as TEXT/DateTime using converter
-            var dateConverter = new ValueConverter<BookingDate, DateTime>(
-                v => v.Value,
-                v => BookingDate.FromDateTime(v));
+            //var dateConverter = new ValueConverter<BookingDate, DateTime>(
+            //    v => v.Value,
+            //    v => BookingDate.FromDateTime(v));
 
-            booking.Property(b => b.BookingDate)
-                .HasConversion(dateConverter)
-                .IsRequired()
-                .HasColumnType("TEXT");
+            //booking.Property(b => b.BookingDate)
+            //    .HasConversion(dateConverter)
+            //    .IsRequired()
+            //    .HasColumnType("TEXT")
+            //    .HasColumnName("BookingDate");
 
-            // SeatCount -> INTEGER
+            booking.Ignore(b => b.BookingDate);
+
+            booking.Property(b => b.BookingDateValue)
+                .HasColumnName("BookingDate")
+                .HasColumnType("TEXT")
+                .IsRequired();
+
+            // SeatCount -> map to column 'SeatCount' (new schema)
             var seatsConverter = new ValueConverter<SeatCount, int>(
                 v => v.Value,
                 v => SeatCount.FromInt(v));
@@ -55,7 +65,8 @@ namespace BookingHub.Infrastructure.Data
             booking.Property(b => b.SeatCount)
                 .HasConversion(seatsConverter)
                 .IsRequired()
-                .HasColumnType("INTEGER");
+                .HasColumnType("INTEGER")
+                .HasColumnName("SeatCount");
 
             // Map BookingDestination value object as an owned type (stored in the same table)
             booking.OwnsOne(b => b.Destination, dest =>
@@ -69,6 +80,11 @@ namespace BookingHub.Infrastructure.Data
                     .HasColumnType("TEXT");
             });
 
+            // Map FlightIdValue primitive column
+            booking.Property(b => b.FlightIdValue)
+                .HasColumnName("FlightIdValue")
+                .HasColumnType("TEXT");
+
             // ----- Flight mapping -----
             var flight = modelBuilder.Entity<Flight>();
             flight.ToTable("Flights");
@@ -76,8 +92,9 @@ namespace BookingHub.Infrastructure.Data
             // Prevent EF from mapping value object directly
             flight.Ignore(f => f.Id);
             flight.HasKey(f => f.IdValue);
-            flight.Property(f => f.IdValue).HasColumnType("TEXT");
+            flight.Property(f => f.IdValue).HasColumnType("TEXT").HasColumnName("IdValue");
 
+            // Use FromLocation/ToLocation to avoid reserved words
             flight.Property(f => f.From)
                 .IsRequired()
                 .HasColumnType("TEXT")
@@ -90,11 +107,13 @@ namespace BookingHub.Infrastructure.Data
 
             flight.Property(f => f.DepartureDate)
                 .IsRequired()
-                .HasColumnType("TEXT");
+                .HasColumnType("TEXT")
+                .HasColumnName("DepartureDate");
 
             flight.Property(f => f.AvailableSeats)
                 .IsRequired()
-                .HasColumnType("INTEGER");
+                .HasColumnType("INTEGER")
+                .HasColumnName("AvailableSeats");
 
             // Seed two flights (use fixed future dates)
             flight.HasData(

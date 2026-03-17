@@ -46,8 +46,8 @@ namespace BookingHub.Infrastructure.Repositories
 
             return await _dbContext.Bookings
                 .AsNoTracking()
-                .Where(b => b.BookingDate.Value >= start && b.BookingDate.Value < endExclusive)
-                .OrderBy(b => b.BookingDate.Value)
+                .Where(b => b.BookingDateValue >= start && b.BookingDateValue < endExclusive)
+                .OrderBy(b => b.BookingDateValue)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }

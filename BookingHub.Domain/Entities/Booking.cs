@@ -44,6 +44,12 @@ namespace BookingHub.Domain.Entities
             private set => FlightId = value == null ? null : FlightId.FromGuid(value.Value);
         }
 
+        public DateTime BookingDateValue
+        {
+            get => BookingDate.Value;
+            private set => BookingDate = BookingHub.Domain.ValueObjects.BookingDate.FromDateTime(value);
+        }
+
         // For EF Core
         private Booking() { }
 
@@ -51,6 +57,7 @@ namespace BookingHub.Domain.Entities
         {
             Id = id;
             BookingDate = bookingDate;
+            BookingDateValue = bookingDate.Value;
             SeatCount = seatCount;
             Destination = destination;
             FlightId = flightId;

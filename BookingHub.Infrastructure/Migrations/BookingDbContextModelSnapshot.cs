@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BookingHub.Migrations
+namespace BookingHub.Infrastructure.Migrations
 {
     [DbContext(typeof(BookingDbContext))]
     partial class BookingDbContextModelSnapshot : ModelSnapshot
@@ -21,16 +21,20 @@ namespace BookingHub.Migrations
                 {
                     b.Property<Guid>("IdValue")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("IdValue");
 
                     b.Property<DateTime>("BookingDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("BookingDate");
 
                     b.Property<Guid?>("FlightIdValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FlightIdValue");
 
                     b.Property<int>("SeatCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("SeatCount");
 
                     b.HasKey("IdValue");
 
@@ -41,13 +45,16 @@ namespace BookingHub.Migrations
                 {
                     b.Property<Guid>("IdValue")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("IdValue");
 
                     b.Property<int>("AvailableSeats")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("AvailableSeats");
 
                     b.Property<DateTime>("DepartureDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DepartureDate");
 
                     b.Property<string>("From")
                         .IsRequired()

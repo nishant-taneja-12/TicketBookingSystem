@@ -1,5 +1,5 @@
 ### Create a new booking
-POST http://localhost:5000/api/bookings
+POST http://localhost:54666/api/bookings
 Content-Type: application/json
 
 {
