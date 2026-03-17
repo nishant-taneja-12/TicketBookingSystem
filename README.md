@@ -8,11 +8,13 @@
 
 \*\*BookingHub\*\* is a ticket booking system designed using \*\*Domain-Driven Design (DDD)\*\* and \*\*Clean Architecture\*\* principles.
 
+
+
 It demonstrates how to build a scalable, maintainable, and testable backend system by properly separating concerns and encapsulating business logic.
 
 
 
-The application allows users to:
+\### Features
 
 
 
@@ -36,15 +38,11 @@ This project strictly follows:
 
 
 
-\* ✅ \*\*Domain-Driven Design (DDD)\*\*
+\* ✅ Domain-Driven Design (DDD)
 
-\* ✅ \*\*Clean Architecture\*\*
+\* ✅ Clean Architecture
 
-\* ✅ \*\*SOLID Principles\*\*
-
-
-
-The system is structured into multiple layers to ensure \*\*clear separation of concerns\*\* and \*\*dependency control\*\*.
+\* ✅ SOLID Principles
 
 
 
@@ -62,15 +60,15 @@ BookingHub.sln
 
 │
 
-├── BookingHub.Domain          # Core business logic (Entities, Value Objects, Domain Events)
+├── BookingHub.Domain
 
-├── BookingHub.Application     # Use cases (Handlers, DTOs)
+├── BookingHub.Application
 
-├── BookingHub.Infrastructure  # Persistence (EF Core, SQLite, Repositories)
+├── BookingHub.Infrastructure
 
-├── BookingHub.API             # Entry point (Controllers, DI setup)
+├── BookingHub.API
 
-└── BookingHub.Tests           # Unit tests
+└── BookingHub.Tests
 
 ```
 
@@ -80,7 +78,7 @@ BookingHub.sln
 
 
 
-\## 🔄 Dependency Flow (Clean Architecture)
+\## 🔄 Dependency Flow
 
 
 
@@ -94,11 +92,11 @@ Infrastructure → Domain + Application
 
 
 
-\* The \*\*Domain layer is completely independent\*\*
+\* Domain layer is completely independent
 
-\* No business logic exists outside the Domain
+\* Business logic resides only in Domain
 
-\* Infrastructure concerns (DB, EF Core) are isolated
+\* Infrastructure concerns are isolated
 
 
 
@@ -106,7 +104,7 @@ Infrastructure → Domain + Application
 
 
 
-\## 🧩 Domain Design (DDD)
+\## 🧩 Domain Design
 
 
 
@@ -114,7 +112,7 @@ Infrastructure → Domain + Application
 
 
 
-\*\*Booking\*\* is the central aggregate root.
+\*\*Booking\*\* is the aggregate root.
 
 
 
@@ -138,25 +136,25 @@ Responsibilities:
 
 
 
-To avoid \*\*primitive obsession\*\*, the system uses Value Objects:
+To avoid primitive obsession, the system uses:
 
 
 
 \* `BookingId` → wraps Guid
 
-\* `BookingDate` → enforces valid future dates
+\* `BookingDate` → ensures valid dates
 
-\* `SeatCount` → enforces seat constraints (e.g., > 0, max limit)
-
-
-
-\#### Benefits:
+\* `SeatCount` → enforces seat rules
 
 
 
-\* Encapsulated validation
+Benefits:
+
+
 
 \* Immutability
+
+\* Encapsulation of validation
 
 \* Strong domain modeling
 
@@ -178,23 +176,15 @@ Example:
 
 
 
-Raised when:
+Why:
 
 
 
-\* A new booking is successfully created
+\* Decouples side effects
 
+\* Improves scalability
 
-
-\#### Why Domain Events?
-
-
-
-\* Decouple side effects from core logic
-
-\* Enable scalability (notifications, integrations)
-
-\* Improve maintainability
+\* Enables future integrations
 
 
 
@@ -206,19 +196,15 @@ Raised when:
 
 
 
-Handles \*\*use cases\*\* and orchestration.
+Handles use cases:
 
 
 
-\### Use Cases:
+\* CreateBookingHandler
 
+\* GetBookingByIdHandler
 
-
-\* `CreateBookingHandler`
-
-\* `GetBookingByIdHandler`
-
-\* `GetBookingsByDateHandler`
+\* GetBookingsByDateHandler
 
 
 
@@ -226,9 +212,9 @@ Responsibilities:
 
 
 
-\* Coordinate domain logic
+\* Orchestrates domain logic
 
-\* Do NOT contain business rules
+\* Contains no business rules
 
 
 
@@ -240,23 +226,21 @@ Responsibilities:
 
 
 
-Handles external concerns such as:
+Handles:
 
 
 
-\* Database (SQLite via EF Core)
+\* EF Core (SQLite)
 
 \* Repository implementations
 
 
 
-\### Key Features:
+Key points:
 
 
 
-\* EF Core configurations
-
-\* Value Object mappings using conversions
+\* Value Object mapping
 
 \* Persistence isolation
 
@@ -274,11 +258,11 @@ Handles external concerns such as:
 
 \* Thin controllers
 
-\* Delegates logic to Application layer via MediatR
+\* Uses MediatR
 
 
 
-\### Example Endpoints:
+\### Endpoints
 
 
 
@@ -302,11 +286,9 @@ GET    /api/bookings/date/{date}
 
 
 
-\* Dedicated test project (`BookingHub.Tests`)
+\* xUnit test project
 
 \* Focus on Domain and Application layers
-
-\* Ensures business rules are validated independently
 
 
 
@@ -314,7 +296,7 @@ GET    /api/bookings/date/{date}
 
 
 
-\## 🔐 Business Rules Enforced
+\## 🔐 Business Rules
 
 
 
@@ -322,9 +304,9 @@ GET    /api/bookings/date/{date}
 
 \* Seat count must be greater than zero
 
-\* Maximum seat limit per booking enforced
+\* Maximum seat limit enforced
 
-\* All validations reside inside the Domain
+\* All validations live in Domain
 
 
 
@@ -332,11 +314,11 @@ GET    /api/bookings/date/{date}
 
 
 
-\## 🚀 Technologies Used
+\## 🚀 Technologies
 
 
 
-\* .NET (ASP.NET Core Web API)
+\* .NET Web API
 
 \* Entity Framework Core
 
@@ -344,7 +326,7 @@ GET    /api/bookings/date/{date}
 
 \* MediatR
 
-\* xUnit (for testing)
+\* xUnit
 
 
 
@@ -356,19 +338,19 @@ GET    /api/bookings/date/{date}
 
 
 
-\### ✔ Use of Value Objects
+\### ✔ Value Objects
 
 
 
-Prevents invalid states and keeps validation close to data.
+Encapsulate validation and prevent invalid states.
 
 
 
-\### ✔ Aggregate Root Pattern
+\### ✔ Aggregate Root
 
 
 
-Ensures consistency and control over domain operations.
+Ensures consistency and controls changes.
 
 
 
@@ -376,7 +358,7 @@ Ensures consistency and control over domain operations.
 
 
 
-Allows extensibility without tightly coupling components.
+Decouple side effects and improve extensibility.
 
 
 
@@ -384,15 +366,7 @@ Allows extensibility without tightly coupling components.
 
 
 
-Improves:
-
-
-
-\* Testability
-
-\* Maintainability
-
-\* Scalability
+Improves maintainability, testability, and scalability.
 
 
 
@@ -400,37 +374,19 @@ Improves:
 
 
 
-\## 📈 Future Enhancements
+\## 📈 Future Improvements
 
 
 
-\* Event-driven architecture (publish domain events via message broker)
+\* Event-driven architecture
 
 \* Payment integration
 
-\* Seat-level booking (advanced modeling)
+\* Seat-level booking
 
-\* Caching for read queries
+\* Caching
 
-\* Authentication \& authorization
-
-
-
-\---
-
-
-
-\## 🧠 What This Project Demonstrates
-
-
-
-\* Real-world application of \*\*DDD concepts\*\*
-
-\* Proper \*\*layered architecture\*\*
-
-\* Strong separation between \*\*domain and infrastructure\*\*
-
-\* Writing \*\*maintainable and scalable backend systems\*\*
+\* Authentication \& Authorization
 
 
 
@@ -442,7 +398,7 @@ Improves:
 
 
 
-\*\*Nishant Taneja\*\*
+Nishant Taneja
 
 
 
@@ -454,9 +410,7 @@ Improves:
 
 
 
-This project is designed not just to work —
-
-but to demonstrate \*\*how to think like a software architect\*\*.
+This project demonstrates how to apply DDD and Clean Architecture in a real-world backend system.
 
 
 
