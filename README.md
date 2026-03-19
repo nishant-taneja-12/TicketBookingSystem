@@ -52,3 +52,70 @@ The solution includes **xUnit** tests for the Domain and Application layers, uti
 2. **Update the database:**
    ```bash
    dotnet ef database update -p BookingHub.Infrastructure -s BookingHub.API
+
+## 🚀 Future Roadmap
+
+### 1. Reliability & Consistency
+
+- **Transactional consistency**  
+  Introduce a unit of work or explicit EF Core transaction so creating a booking and updating flight seats are atomic.
+
+- **Concurrency control**  
+  Add optimistic concurrency checks (rowversion / concurrency tokens) for `Flight` to safely handle simultaneous seat bookings.
+
+
+### 2. Domain Events & Integration
+
+- **Domain event dispatch**  
+  Wire `BookingCreatedEvent` into an event dispatcher (e.g. MediatR notifications or a custom dispatcher) and implement handlers for side effects (e.g. notifications, projections, audit logs).
+
+- **Transactional outbox**  
+  Implement a transactional outbox pattern so domain events are persisted with the main transaction and published reliably to external systems (e.g. message bus).
+
+
+### 3. Validation & Error Handling
+
+- **Centralized validation**  
+  Add request validation (e.g. FluentValidation) to enforce input rules before handlers execute.
+
+- **Consistent error responses**  
+  Introduce global exception handling middleware to standardize error payloads (`ProblemDetails`), and map domain/validation/business exceptions to appropriate HTTP status codes.
+
+
+### 4. Testing & Quality
+
+- **Unit tests**  
+  Add tests for value objects, entities (`Flight.ReduceAvailableSeats`, `Booking.Create`), and application handlers (happy paths and edge cases).
+
+- **Integration tests**  
+  Add tests against a real or in-memory SQLite database to validate repository behavior and end-to-end booking flows.
+
+- **API tests**  
+  Use `WebApplicationFactory` to exercise HTTP endpoints and verify status codes, contracts, and error handling.
+
+
+### 5. Features & Extensibility
+
+- **Flight search & listing**  
+  Add endpoints to search flights by route/date and expose the currently seeded flights.
+
+- **Cancellation & modification flows**  
+  Implement booking cancellation and modification use cases, including returning seats to flights and enforcing new invariants.
+
+- **User / customer context**  
+  Introduce a customer or user concept, link bookings to customers, and consider authentication/authorization for protected endpoints.
+
+- **Pagination & filtering**  
+  Extend query endpoints with pagination, sorting, and richer filters for bookings and flights.
+
+
+### 6. Architecture & Operational Concerns
+
+- **Configuration & environments**  
+  Split configuration for local/dev/prod (connection strings, logging levels) and add environment-specific appsettings.
+
+- **Observability**  
+  Add structured logging, basic metrics, and request tracing to support diagnostics in real environments.
+
+- **Database evolution**  
+  Harden migration strategy for production (explicit migration commands, versioning, and rollback approach).
