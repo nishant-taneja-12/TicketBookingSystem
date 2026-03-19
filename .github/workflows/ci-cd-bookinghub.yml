@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout
@@ -38,9 +39,12 @@ jobs:
         run: dotnet test BookingHub.Tests/BookingHub.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./BookingHub.Tests/TestResults/**/coverage.cobertura.xml
+          slug: nishant-taneja-12/ticketbookingsystem
+          use_oidc: true
+          verbose: true
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
