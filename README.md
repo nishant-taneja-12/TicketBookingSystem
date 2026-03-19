@@ -3,7 +3,7 @@
 [![CI/CD](https://github.com/nishant-taneja-12/TicketBookingSystem/actions/workflows/ci-cd-bookinghub.yml/badge.svg)](https://github.com/nishant-taneja-12/TicketBookingSystem/actions/workflows/ci-cd-bookinghub.yml)
 [![GHCR Image](https://img.shields.io/badge/GHCR-bookinghub--api-2496ED?logo=docker&logoColor=white)](https://github.com/nishant-taneja-12/TicketBookingSystem/pkgs/container/bookinghub-api)
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/8.0)
-[![codecov](https://codecov.io/gh/nishant-taneja-12/ticketbookingsystem/graph/badge.svg)](https://codecov.io/gh/nishant-taneja-12/ticketbookingsystem)
+[![codecov](https://codecov.io/github/nishant-taneja-12/TicketBookingSystem/graph/badge.svg?token=BOJMK16X8Q)](https://codecov.io/github/nishant-taneja-12/TicketBookingSystem)
 
 A minimal, high-performance airline-style booking system built with **.NET 8**, focusing on **Domain-Driven Design (DDD)** and **Clean Architecture** principles.
 
