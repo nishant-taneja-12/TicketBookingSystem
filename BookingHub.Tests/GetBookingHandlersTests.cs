@@ -40,6 +40,18 @@ namespace BookingHub.Tests
         }
 
         [Fact]
+        public async Task GetById_WhenMissing_ReturnsNull()
+        {
+            using var db = CreateInMemoryDb();
+            var repo = new BookingRepository(db);
+            var handler = new GetBookingByIdHandler(repo);
+
+            var result = await handler.Handle(new GetBookingByIdQuery(Guid.NewGuid()), default);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public async Task Should_Return_Bookings_Within_DateRange()
         {
             using var db = CreateInMemoryDb();
@@ -110,6 +122,28 @@ namespace BookingHub.Tests
             Assert.Contains(list, x => x.Id == bStart.IdValue);
             Assert.Contains(list, x => x.Id == bMiddle.IdValue);
             Assert.Contains(list, x => x.Id == bEnd.IdValue);
+        }
+
+        [Fact]
+        public async Task DateRange_ReturnsResultsOrderedByBookingDate()
+        {
+            using var db = CreateInMemoryDb();
+            var repo = new BookingRepository(db);
+
+            var targetDay = DateTime.UtcNow.Date.AddDays(2);
+            var b1 = Domain.Entities.Booking.Create(targetDay.AddHours(15), 1);
+            var b2 = Domain.Entities.Booking.Create(targetDay.AddHours(9), 1);
+            var b3 = Domain.Entities.Booking.Create(targetDay.AddHours(12), 1);
+
+            db.Bookings.AddRange(b1, b2, b3);
+            await db.SaveChangesAsync();
+
+            var handler = new GetBookingsByDateHandler(repo);
+            var results = (await handler.Handle(new GetBookingsByDateRangeQuery(targetDay, targetDay), default)).ToList();
+
+            Assert.Equal(3, results.Count);
+            Assert.True(results[0].BookingDate <= results[1].BookingDate);
+            Assert.True(results[1].BookingDate <= results[2].BookingDate);
         }
     }
 }
