@@ -1,5 +1,10 @@
 # 🎟️ BookingHub
 
+[![CI/CD](https://github.com/nishant-taneja-12/TicketBookingSystem/actions/workflows/ci-cd-bookinghub.yml/badge.svg)](https://github.com/nishant-taneja-12/TicketBookingSystem/actions/workflows/ci-cd-bookinghub.yml)
+[![GHCR Image](https://img.shields.io/badge/GHCR-bookinghub--api-2496ED?logo=docker&logoColor=white)](https://github.com/nishant-taneja-12/TicketBookingSystem/pkgs/container/bookinghub-api)
+[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![codecov](https://codecov.io/gh/nishant-taneja-12/TicketBookingSystem/branch/main/graph/badge.svg)](https://codecov.io/gh/nishant-taneja-12/TicketBookingSystem)
+
 A minimal, high-performance airline-style booking system built with **.NET 8**, focusing on **Domain-Driven Design (DDD)** and **Clean Architecture** principles.
 
 ---
@@ -206,6 +211,46 @@ The solution includes **xUnit** tests for the Domain and Application layers, uti
 2. **Update the database:**
    ```bash
    dotnet ef database update -p BookingHub.Infrastructure -s BookingHub.API
+   ```
+3. **Run the API:**
+   ```bash
+   dotnet run --project BookingHub.API
+   ```
+
+## 🐳 Containerization & CI/CD
+
+### Build and run with Docker
+
+```bash
+docker build -t bookinghub-api:local .
+docker run --rm -p 8080:8080 bookinghub-api:local
+```
+
+Then open:
+- `http://localhost:8080/swagger`
+
+### GitHub Actions workflow
+
+This repository includes a workflow at:
+- `.github/workflows/ci-cd-bookinghub.yml`
+
+What it does:
+- Restores, builds, and tests the solution on every PR to `main`
+- Builds a Docker image after tests pass
+- Pushes image tags to GitHub Container Registry (GHCR) on `main` pushes
+
+Published image format:
+- `ghcr.io/<github-owner>/bookinghub-api:latest`
+- `ghcr.io/<github-owner>/bookinghub-api:sha-<short-sha>`
+
+### Required GitHub permissions
+
+- Ensure workflow permissions allow package publishing:
+  - `Settings` → `Actions` → `General` → `Workflow permissions`
+  - Select **Read and write permissions**
+- The workflow uses `GITHUB_TOKEN` for GHCR login (no extra secret required for GHCR).
+- For coverage uploads, add `CODECOV_TOKEN` in:
+  - `Settings` → `Secrets and variables` → `Actions` → `New repository secret`
 
 ## 🚀 Future Roadmap
 
