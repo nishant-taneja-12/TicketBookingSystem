@@ -205,6 +205,7 @@ sequenceDiagram
 
 ## 🧪 Testing
 The solution includes **xUnit** tests for the Domain and Application layers, utilizing an in-memory database provider to ensure logic reliability without infrastructure overhead.
+Coverage reports are generated in CI using `XPlat Code Coverage` and uploaded to Codecov.
 
 ## ▶️ Run Locally
 1. **Clone the repository.**
