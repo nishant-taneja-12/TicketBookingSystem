@@ -5,7 +5,7 @@ POST {{baseUrl}}/api/bookings
 Content-Type: application/json
 
 {
-  "bookingDate": "2026-03-20T10:00:00Z",
+  "bookingDate": "2026-03-22T10:00:00Z",
   "seatCount": 3,
   "destination": {
     "name": "Conference Center",

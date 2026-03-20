@@ -47,7 +47,8 @@ namespace BookingHub.Domain.Entities
         public DateTime BookingDateValue
         {
             get => BookingDate.Value;
-            private set => BookingDate = BookingHub.Domain.ValueObjects.BookingDate.FromDateTime(value);
+            //private set => BookingDate = BookingHub.Domain.ValueObjects.BookingDate.FromDateTime(value);
+            private set => BookingDate = BookingDate.FromPersistence(value);
         }
 
         // For EF Core

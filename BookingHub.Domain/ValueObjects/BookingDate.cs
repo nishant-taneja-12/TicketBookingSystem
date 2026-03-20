@@ -23,6 +23,11 @@ namespace BookingHub.Domain.ValueObjects
             return new BookingDate(utc);
         }
 
+        internal static BookingDate FromPersistence(DateTime dt)
+        {
+            var utc = dt.Kind == DateTimeKind.Utc ? dt : dt.ToUniversalTime();
+            return new BookingDate(utc); // NO validation
+        }
         public override bool Equals(object? obj) => Equals(obj as BookingDate);
         public bool Equals(BookingDate? other) => other != null && Value == other.Value;
         public override int GetHashCode() => Value.GetHashCode();
